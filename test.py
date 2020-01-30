@@ -77,8 +77,8 @@ def test(s, num_of_cells, seq_len, trans_1, trans_2, start_1, start_2, weight_in
 
     num_of_states = len(weight_initial[0])
 
-    C1, Y1 = util.generate_hmm_nonzero_states(rates_of_cluster_1, num_of_states, trans_1, start_1, seq_len)
-    C2, Y2 = util.generate_hmm_nonzero_states(rates_of_cluster_2, num_of_states, trans_2, start_2, seq_len)
+    C1, Y1 = util.generate_hmm(rates_of_cluster_1, num_of_states, trans_1, start_1, seq_len)
+    C2, Y2 = util.generate_hmm(rates_of_cluster_2, num_of_states, trans_2, start_2, seq_len)
 
     new_Y1 = np.swapaxes(Y1, 0, 1)
     new_Y2 = np.swapaxes(Y2, 0, 1)
