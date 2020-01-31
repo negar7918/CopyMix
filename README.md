@@ -1,6 +1,6 @@
 
-This is the implementation of the CopyMix paper available at TODO arxiv:
-"CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference"
+This is the implementation of the CopyMix paper "CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference" available at https://www.biorxiv.org/content/10.1101/2020.01.29.926022v1
+
 
 
 # Generating simulated data
