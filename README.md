@@ -1,5 +1,5 @@
 
-This is the implementation of the CopyMix paper available at TODO arxiv:
+This is the implementation of the CopyMix paper available at https://www.biorxiv.org/content/10.1101/2020.01.29.926022v1
 "CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference"
 
 
@@ -24,8 +24,7 @@ Data simulation steps summary (check file test.py lines 65-93 for more details):
 # Running simulations
 
 - The test file is an example of the simulation tests (configuration A in Fig. 3) in the paper but for one dataset out of 30.
-- It takes awhile (recommended to run on a powerful machine or cluster),
-  since it is performing VI for 164 initialisation methods each being run for 4 different numbers of clusters in range of 1 to 4.
-- The log starts with printing the simulated data; afterwards, you can follow VI iterations, ELBO difference between iterations,
-  and the updates of cluster probabilities for each sequence.
-- The output is a file to be generated called "inits_45_800_0_result"
+- The chosen initialization is saved in a file, and, it is enough to run "test.py".
+  If you want to rerun the initializations uncomment line 97 in "test.py"; since it takes awhile, it is recommended to run on a powerful machine or cluster.
+  The initialization framework performs VI for 164 initialisation methods each being run for 4 different numbers of clusters in range of 1 to 4.
+

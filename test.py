@@ -94,7 +94,7 @@ def test(s, num_of_cells, seq_len, trans_1, trans_2, start_1, start_2, weight_in
 
     id = '45_800_' + str(s)
     num_of_clusters_DIC = 4
-    initialization.generate_initializations(id, data, num_of_states, num_of_clusters_DIC)
+    #initialization.generate_initializations(id, data, num_of_states, num_of_clusters_DIC)
 
     import pickle
     f = open('./inits_' + id, 'rb')
