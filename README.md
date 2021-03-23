@@ -1,5 +1,5 @@
 
-This is the implementation of the CopyMix paper available at https://www.biorxiv.org/content/10.1101/2020.01.29.926022v1
+This is the implementation of the CopyMix paper available at https://www.biorxiv.org/content/10.1101/2020.01.29.926022v2
 "CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference"
 
 
