@@ -28,7 +28,7 @@ def calculate_predicted_c(pi, weight_vertex, name):
         ax.set_xlabel('sequence position')
         ax.set_ylabel('copy number')
         ax.set_title(name + "_estimated_copy_number")
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/'+name + "_estimated_copy_number.png")
+    plt.savefig('./plots/'+name + "_estimated_copy_number.png")
     return predicted_c
 
 
@@ -50,34 +50,17 @@ def plot(seq_len, gc, name):
         plt.ylabel('gc corrected ratio')
         plt.title(name)
         i += 1
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/' + name+'.png')
+    plt.savefig('./plots/' + name+'.png')
 
 
 s = 12
 rng = np.random.default_rng(s)
 num_of_cells = 150
 seq_len = 200
-#trans_1 = np.array([[0, .2, .8, 0, 0, 0], [0, .1, .8, .1, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0]])
 trans_1 = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
-#trans_1 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-#trans_1 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, .98, .01, .005, .005], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-#trans_1 = np.array([[0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-###trans_2 = np.array([[0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9]])
-#trans_2 = np.array([[.1, .9, 0, 0, 0, 0], [0, .1, .9, 0, 0, 0], [.1, .9, 0, 0, 0, 0], [0, .1, 0, 0, 0, .9], [.1, 0, 0, 0, 0, .9], [0, 0, .9, 0, 0, .1]])
-#trans_2 = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
-#trans_2 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0]])
-#trans_2 = np.array([[.8, .1, 0, 0, 0, .1], [0, .8, .1, 0, 0, .1], [0, 0, .9, .1, 0, 0], [0, 0, 0, .9, 0, .1], [0, 0, 0, 0, .9, .1], [0, 0, 0, 0, .1, .9]])
-####trans_3 = np.array([[ .1, 0, 0, 0, .8, .1,], [0, .1, .8, 0, 0, .1], [0, 0, .9, .1, 0, 0], [0, 0, 0, .9, 0, .1], [0, 0, 0, 0, .9, .1], [0, 0, 0, 0, .1, .9]])
-trans_3 = trans_1#np.array([[.9, .1, 0, 0, 0, 0], [0, .9, .1, 0, 0, 0], [.9, .1, 0, 0, 0, 0], [0, .9, 0, 0, 0, .1], [.9, 0, 0, 0, 0, .1], [0, 0, .1, 0, 0, .9]])
-#trans_1 #np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
+trans_3 = trans_1
 trans_2 = trans_1
 trans_4 = trans_1
-#trans_5 = trans_1
-# start_1 = np.array([0, 0, 1, 0, 0, 0])
-# start_2 = np.array([0, 0, 0, 0, 0, 1])
-# weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1]])
-#  start_1 = np.array([0, 1, 0, 0, 0, 0])
-# start_2 = np.array([0, 1, 0, 0, 0, 0])
 start_1 = np.array([0, 1, 0, 0, 0, 0])
 start_2 = np.array([0, 0, 1, 0, 0, 0])
 start_3 = np.array([0, 0, 0, 1, 0, 0])
@@ -128,11 +111,6 @@ print(len(new_Y2))
 print(len(new_Y3))
 print(len(new_Y4))
 
-
-# C1[10:60] = 4
-# means = rates_of_cluster_1
-# data_sign[:len(new_Y1),10:60] = np.array([rng.normal(loc=80, scale=math.sqrt(var), size=50) for mean in means])
-
 C1[30:40] = 5
 means = rates_of_cluster_1
 data_sign[:len(new_Y1),30:40] = np.array([rng.normal(loc=70, scale=math.sqrt(var), size=10) for mean in means])
@@ -143,14 +121,6 @@ C1[120:130] = 5
 means = rates_of_cluster_1
 data_sign[:len(new_Y1),120:130] = np.array([rng.normal(loc=70, scale=math.sqrt(var), size=10) for mean in means])
 
-
-
-# C2[20:30] = 2
-# data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),20:30] = rng.normal(loc=30, scale=math.sqrt(var), size=10)[np.newaxis, :]
-# C2[30:50] = 2
-# data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),30:50] = rng.normal(loc=40, scale=math.sqrt(10), size=20)[np.newaxis, :]
-# C2[50:70] = 2
-# data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),50:70] = rng.normal(loc=30, scale=math.sqrt(5), size=20)[np.newaxis, :]
 
 C2[70:90] = 2
 data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),70:90] = rng.normal(loc=40, scale=math.sqrt(var), size=20)[np.newaxis, :]
@@ -183,42 +153,6 @@ data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3
 C4[150:170] = 0
 means = rates_of_cluster_4
 data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),150:170] = np.array([rng.normal(loc=1, scale=math.sqrt(var), size=20) for mean in means])
-
-
-# C5[70:80] = 1
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,70:80] = np.array([rng.normal(loc=5, scale=math.sqrt(.1), size=10) for mean in means])
-# C5[80:90] = 0
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,80:90] = np.array([rng.normal(loc=2, scale=math.sqrt(.1), size=10) for mean in means])
-# C5[90:100] = 0
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,90:100] = np.array([rng.normal(loc=.1, scale=math.sqrt(.1), size=10) for mean in means])
-#
-# C5[100:110] = 0
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,100:110] = np.array([rng.normal(loc=1, scale=math.sqrt(5), size=10) for mean in means])
-# C5[110:120] = 0
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,100:110] = np.array([rng.normal(loc=1, scale=math.sqrt(.1), size=10) for mean in means])
-# C5[120:130] = 0
-# means = rates_of_cluster_5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,110:120] = np.array([rng.normal(loc=2, scale=math.sqrt(var), size=10) for mean in means])
-
-# C5[3:10] = 5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,3:10] = rng.normal(loc=60, scale=math.sqrt(1), size=7)[np.newaxis, :]
-# C5[10:20] = 5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,10:20] = rng.normal(loc=70, scale=math.sqrt(var), size=10)[np.newaxis, :]
-# C5[20:30] = 6
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,20:30] = rng.normal(loc=80, scale=math.sqrt(3), size=10)[np.newaxis, :]
-# C5[30:40] = 6
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,30:40] = rng.normal(loc=90, scale=math.sqrt(5), size=10)[np.newaxis, :]
-# C5[40:50] = 6
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,40:50] = rng.normal(loc=80, scale=math.sqrt(3), size=10)[np.newaxis, :]
-# C5[50:60] = 5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,50:60] = rng.normal(loc=70, scale=math.sqrt(var), size=10)[np.newaxis, :]
-# C5[60:70] = 5
-# data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4):,60:70] = rng.normal(loc=60, scale=math.sqrt(1), size=10)[np.newaxis, :]
 
 
 plot(seq_len, data_sign, "CONF 18")

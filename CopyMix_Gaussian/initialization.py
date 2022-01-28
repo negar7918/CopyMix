@@ -26,8 +26,6 @@ def get_clustering_random(num_of_clusters, data):
     return pi, classes
 
 
-# right direction .01, .01 with 10 for clustering
-# bad: 1, .01; 1, 1; .2, .2; .2, 10; .01, 1; .01, 10; .01, 05; .05, .05; .01, .2
 def get_weights_random(i, num_of_clusters, num_of_states, data):
     np.random.seed(i)
     length = len(data[0, :])
@@ -36,17 +34,8 @@ def get_weights_random(i, num_of_clusters, num_of_states, data):
     weight_vertex = np.ones((num_of_clusters, num_of_states, length)) / 100
     for c in range(num_of_clusters):
         weight_initial[c] = generate_categorical_prob(num_of_states)
-        # if c==0:
-        #     weight_initial[c] = np.array([0, 0, 1, 0]) #
-        # if c==1:
-        #     weight_initial[c] = np.array([0, 0, 0, 1])
-        # if c==2:
-        #     weight_initial[c] = np.array([0, 1, 0, 0])
-        # if c==3:
-        #     weight_initial[c] = np.array([1, 0, 0, 0])
         for s in range(num_of_states):
-            weight_edge[c, s] = generate_categorical_prob(num_of_states, .01) #generate_categorical_prob(num_of_states, 10)
-            #np.array([1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6])  #
+            weight_edge[c, s] = generate_categorical_prob(num_of_states, .1)
             for l in range(length):
                 weight_vertex[c, s, l] = random.uniform(0.1, 0.9)
     return weight_initial, weight_edge, weight_vertex
@@ -218,7 +207,7 @@ def generate_initializations(id, data, num_of_states, total_num_of_clusters):
             inits[index].add_new(trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi,
                                  weight_initial, new_weight_edge, new_weight_vertex, vi.likelihood, "random" + str(i), k)
 
-            print('inits ' + str(i) + ' are done.') # convergence but bad init and one cluster detected from init
+            print('inits ' + str(i) + ' are done.')
 
             index += 1
 

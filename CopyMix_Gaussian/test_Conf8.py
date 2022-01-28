@@ -28,7 +28,7 @@ def calculate_predicted_c(pi, weight_vertex, name):
         ax.set_xlabel('sequence position')
         ax.set_ylabel('copy number')
         ax.set_title(name + "_estimated_copy_number")
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/'+name + "_estimated_copy_number.png")
+    plt.savefig('./plots/'+name + "_estimated_copy_number.png")
     return predicted_c
 
 
@@ -46,29 +46,16 @@ def plot(seq_len, gc, name):
         plt.ylabel('gc corrected ratio')
         plt.title(name)
         i += 1
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/' + name+'.png')
+    plt.savefig('./plots/' + name+'.png')
 
 
 s = 12
 rng = np.random.default_rng(s)
 num_of_cells = 150
 seq_len = 200
-#trans_1 = np.array([[0, .2, .8, 0, 0, 0], [0, .1, .8, .1, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0]])
 trans_1 = np.array([[0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-#trans_1 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-#trans_1 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, .98, .01, .005, .005], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-#trans_1 = np.array([[0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-###trans_2 = np.array([[0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9], [0, 0, 0, 0, .1, .9]])
-#trans_2 = np.array([[0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1]])
-#trans_2 = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
-#trans_2 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0]])
 trans_2 = trans_1
-trans_3 = trans_1 #np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-# start_1 = np.array([0, 0, 1, 0, 0, 0])
-# start_2 = np.array([0, 0, 0, 0, 0, 1])
-# weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1]])
-#  start_1 = np.array([0, 1, 0, 0, 0, 0])
-# start_2 = np.array([0, 1, 0, 0, 0, 0])
+trans_3 = trans_1
 start_1 = np.array([0, 0, 1, 0, 0, 0])
 start_2 = np.array([0, 0, 1, 0, 0, 0])
 start_3 = np.array([0, 1, 0, 0, 0, 0])
@@ -123,23 +110,11 @@ C2[170:200] = 3
 means = rates_of_cluster_2 * 1.5
 data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),170:200] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=30) for mean in means])
 
-# C3[10:20] = 1
-# data_sign[len(new_Y1)+len(new_Y2):,10:20] = min_y * 1/2
-#
-# C3[100:150] = 1
-# data_sign[len(new_Y1)+len(new_Y2):,100:150] = min_y * 1/2
-
 C3[100:150] = 4
 data_sign[len(new_Y1)+len(new_Y2):,100:150] = rng.normal(loc=50, scale=math.sqrt(var), size=50)[np.newaxis, :]
 
 C3[150:160] = 4
 data_sign[len(new_Y1)+len(new_Y2):,150:160] = rng.normal(loc=50, scale=math.sqrt(var), size=10)[np.newaxis, :]
-
-# C3[500:550] = 0
-# data_sign[len(new_Y1)+len(new_Y2):,500:550] = 1/2
-
-# C3[550:650] = 4
-# data_sign[len(new_Y1)+len(new_Y2):,550:650] = min_y * 8
 
 plot(seq_len, data_sign, "CONF 8")
 label_0 = [0 for i in range(len(Y1[0]))]
@@ -201,8 +176,8 @@ beta_prior = 0
 for n in range(num_of_cells):
     theta[n] = np.mean(data[n])  # mean of data # 10
     tau[n] = np.var(data[n])  # var of data # 1
-alpha_gam = 1 #.01 1
-beta_gam = np.var(data) #.01   2
+alpha_gam = 1
+beta_gam = np.var(data)
 weight_vertex = np.zeros((3, num_of_states, seq_len))
 weight_initial = np.ones((3, num_of_states)) / 3
 weight_edge = np.zeros((3, num_of_states, num_of_states))
@@ -215,38 +190,6 @@ for k in range(3):
             weight_vertex[k, s, l] = rng.uniform(0.1, 0.9)
     lam[k] = weight_edge[k] * 100 + .0000000000001
 pi, classes = get_clustering_random(3, data)
-
-lam[0] = weight_edge[0] * 100 + .0000000000001
-lam[1] = weight_edge[1] * 100 + .0000000000001
-lam[2] = weight_edge[2] * 100 + .0000000000001
-#
-# pi = np.array([[0, 0, 1], [0, 0, 1],
-#                [1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0],
-#                [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]
-#                 , [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0],
-#                [0, 1, 0], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1],
-#                 [0, 0, 1], [0, 0, 1], [0, 0, 1],
-#                [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
-#                [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
-#                [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
-#                [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
-#                [1, 0, 0], [1, 0, 0],
-#                [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1],
-#                [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1],
-#                [0, 0, 1]
-#                ])
-
-# pi = np.array([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1]
-#                #[1, 0], [1, 0], [1, 0], [1, 0],
-#                #[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0]
-#                 , [1, 0], [1, 0], [1, 0],
-#                [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
-#                [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
-#                [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1],
-#                [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1],
-#                [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1],
-#                [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], ])
-# # #
 
 prior = (delta_prior, theta_prior, tau_prior, alpha_prior, beta_prior, lam_prior)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)

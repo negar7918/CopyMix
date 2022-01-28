@@ -28,7 +28,7 @@ def calculate_predicted_c(pi, weight_vertex, name):
         ax.set_xlabel('sequence position')
         ax.set_ylabel('copy number')
         ax.set_title(name + "_estimated_copy_number")
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/'+name + "_estimated_copy_number.png")
+    plt.savefig('./plots/'+name + "_estimated_copy_number.png")
     return predicted_c
 
 
@@ -44,7 +44,7 @@ def plot(seq_len, gc, name):
         plt.ylabel('gc corrected ratio')
         plt.title(name)
         i += 1
-    plt.savefig('/Users/negar/PycharmProjects/Test/CopyMix/CopyMix_Gaussian/plots/'+name+'.png')
+    plt.savefig('./plots/'+name+'.png')
 
 
 s = 12
@@ -91,10 +91,6 @@ C2[60:90] = 5
 means = rates_of_cluster_2 * 3
 data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),60:90] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=30) for mean in means])
 
-#C1[100:130] = 5
-#means = rates_of_cluster_1 * 3
-#data_sign[:len(new_Y1),100:130] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=30) for mean in means])
-
 plot(seq_len, data_sign, "CONF 4")
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
@@ -133,7 +129,7 @@ def get_clustering_random(num_of_clusters, data):
     pi = np.zeros((num_of_cells, num_of_clusters))
     classes = np.zeros(num_of_cells)
     for n in range(num_of_cells):
-        pi[n] = generate_categorical_prob(num_of_clusters) # generate_categorical_prob(num_of_clusters, 10)
+        pi[n] = generate_categorical_prob(num_of_clusters)
         classes[n] = np.where(pi[n] == max(pi[n]))[0][0]
     return pi, classes
 
@@ -147,8 +143,8 @@ beta_prior = 0
 for n in range(num_of_cells):
     theta[n] = np.mean(data[n])  # mean of data # 10
     tau[n] = np.var(data[n])  # var of data # 1
-alpha_gam = 1 #.01 1
-beta_gam = np.var(data) #.01   2
+alpha_gam = 1
+beta_gam = np.var(data)
 weight_vertex = np.zeros((2, num_of_states, seq_len))
 weight_initial = np.ones((2, num_of_states)) / 2
 weight_edge = np.zeros((2, num_of_states, num_of_states))
@@ -159,7 +155,7 @@ for k in range(2):
         for l in range(seq_len):
             weight_vertex[k, s, l] = rng.uniform(0.1, 0.9)
     lam[k] = weight_edge[k] * 100 + .0000000000001
-pi, classes = get_clustering_random(2, data) # get_clustering_kmeans(3, data) #
+pi, classes = get_clustering_random(2, data)
 
 prior = (delta, theta_prior, tau_prior, alpha_prior, beta_prior, lam)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
