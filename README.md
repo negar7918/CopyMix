@@ -2,29 +2,24 @@
 This is the implementation of the CopyMix paper available at https://www.biorxiv.org/content/10.1101/2020.01.29.926022v2
 "CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference"
 
+See CopyMix_Gaussian folder for the code and test results. Everything outside this folder is old material when the emission modelling was Poisson.
 
-# Generating simulated data
+# Guidelines
 
-Data simulation steps summary (check file test.py lines 65-93 for more details):
+- There are 18 simulated data test files (corresponding to the 18 configurations in the paper), and each uses an initialization which results in the largest ELBO. 
+- The initialization.py was used, for each test, to run 50 initializations and provide the one with the largest ELBO.
+- For the DLP data, the 50 initializations are saved in folder 50inits.
+- The dlp_analysis.py file can  be run to show the DLP data clustering and copy number inference results when comparing to the original paper.
+- The inference.py is the VI code.
+- The folder ginkgo provides the clustering comparison of ginkgo and the original paper for DLP data.
 
-0. Set random seed (for each of 30 datasets, a different seed is set).
+# Running requirements
 
-1. Generate cells belonging to clusters by sampling from a multinomial distribution given some probability distribution such as uniform for 2 clusters.
-
-2. Generate rates for all cells (rates between 80 to 100); then distribute these rates among the cells for different clusters using step 1.
-
-3. Set values to number of HMM's hidden states, transition matrix of each cluster and sequence length.
-
-4. Generate a Poisson HMM for each cluster using cell rates of that cluster, number of hidden states, transition matrix of the cluster and sequence length;
-   this results in one copy number hidden sequence and different cell count sequences emitted from that copy number sequence.
-
-5. Accumulate the cells from step 4, into the dataset. Similarly accumulate their cluster labels and then accumulate the hidden copy number sequences.
-
-
-# Running simulations
-
-- The test file is an example of the simulation tests (configuration A in Fig. 3) in the paper but for one dataset out of 30.
-- The chosen initialization is saved in a file, and, it is enough to run "test.py".
-  If you want to rerun the initializations uncomment line 97 in "test.py"; since it takes awhile, it is recommended to run on a powerful machine or cluster.
-  The initialization framework performs VI for 164 initialisation methods each being run for 4 different numbers of clusters in range of 1 to 4.
-
+- hmmlearn 0.2.1
+- matplotlib 3.3.0
+- multiprocess 0.70.7
+- scikit-learn 0.19.1
+- scipy 1.5.4
+- tqdm 4.41.0
+- pickleshare 0.7.5
+  

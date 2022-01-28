@@ -581,7 +581,7 @@ def calculate_most_probable_states(cells, trans, emiss, weight_initial, pi):
 
 
 # Requires numpy arrays (do np.array() before passing arguments)
-def vi(prior, init, y, max_iter=15, tol=.01):
+def vi(prior, init, y, max_iter=15, tol=.000000001): # .01
     N = len(y[:, 0])
     import multiprocessing as mp
 

@@ -3,7 +3,17 @@ from hmmlearn import hmm, utils
 from scipy import stats
 import math
 
-#rng = np.random.default_rng(12)
+
+def calculate_total_variation(c, true_c):
+    proportion_c = np.zeros_like(c)
+    proportion_true_c = np.zeros_like(c)
+    K = c.shape[0]
+    for k in range(K):
+        proportion_c[k] = c[k] / (np.sum(c[k]) + .00001)
+        proportion_true_c[k] = true_c[k] / np.sum(true_c[k])
+    tv = 0.5 * np.sum(np.abs(proportion_c - proportion_true_c))
+
+    return tv
 
 def add_noise(state):
     if state == 0:
