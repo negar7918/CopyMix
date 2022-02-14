@@ -7,10 +7,12 @@ See CopyMix_Gaussian folder for the code and test results. Everything outside th
 # Guidelines
 
 - There are 18 simulated data test files (corresponding to the 18 configurations in the paper), and each uses an initialization which results in the largest ELBO. 
-- The initialization.py was used, for each test, to run 50 initializations and provide the one with the largest ELBO.
+- The test results can be reproduced by running each of the file in the CopyMix_Gaussian, where the name starts with "test_".
+- By running boxplot.py the test results for the 30 datasets are reproduced in form of a box plot.
+- Note that the initialization.py was used to run 50 initializations and provide the one with the largest ELBO.
 - For the DLP data, the 50 initializations are saved in the folder 50inits.
 - The dlp_analysis.py file can be run (but before that you need to unzip the zipped files) to show the DLP data clustering and copy number inference results when comparing to the original paper.
-- The inference.py is the VI code.
+- The inference.py is the VI code; to run the tests, adjust the pool size in inference.py to match your server's capacity.
 - The folder plots provides the plots
 - The folder ginkgo provides the clustering comparison of ginkgo and the original paper for DLP data.
 - The DLP data files are obtained from https://zenodo.org/record/3445364#.YfPzHvXMLzW
