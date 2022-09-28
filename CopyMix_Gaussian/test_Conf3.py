@@ -1,10 +1,11 @@
 import numpy as np
-import CopyMix.CopyMix_Gaussian.util as util
-from CopyMix.CopyMix_Gaussian import inference
+import util
+import inference
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 from matplotlib import pyplot as plt
 import math
+import pandas as pd
 
 
 def calculate_predicted_c(pi, weight_vertex, name):
@@ -32,19 +33,44 @@ def calculate_predicted_c(pi, weight_vertex, name):
     return predicted_c
 
 
-def plot(seq_len, gc, name):
+def plot(seq_len, gc, name, locs):
+    fig, ax = plt.subplots()
     i = 0
     for value in gc:
         if i < 74:
             color = 'r'
         else:
             color = 'b'
-        plt.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
-        plt.xlabel('sequence position')
-        plt.ylabel('gc corrected ratio')
-        plt.title(name)
+        ax.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
+        ax.set_xticks(locs[:-1])
+        ax.set_xlabel('sequence position')
+        ax.set_ylabel('gc corrected ratio')
+        ax.set_title(name)
         i += 1
-    plt.savefig('./plots/'+name+'.png')
+    plt.savefig('./plots/CONF 3.png')
+
+
+def plot_cn(seq_len, gc, C1, C2):
+    i = 0
+    fig, [ax1, ax2] = plt.subplots(nrows=1, ncols=2)
+    for value in gc:
+        if i < 74:
+            df = pd.DataFrame({'x': np.arange(seq_len),
+                               'y': value,
+                               'z': C1  }) # [i + 5 if i > 15 else i if 8 < i < 15 else i - 2 if 5 < i < 8 else i -10 for i in value]
+            ax1.scatter(df.x, df.y, s= 1, c=df.z, cmap='brg')
+        else:
+            df = pd.DataFrame({'x': np.arange(seq_len),
+                               'y': value,
+                               'z': C2}) # [i + 5 if i > 15 else i if 8 < i < 15 else i - 2 if 5 < i < 8 else i -10 for i in value]
+            ax2.scatter(df.x, df.y, s=1, c=df.z, cmap='brg')
+        i += 1
+    ax1.set_xlabel('sequence position')
+    ax1.set_ylabel('gc corrected ratio')
+    ax2.set_xlabel('sequence position')
+    ax2.set_ylabel('gc corrected ratio')
+    plt.savefig('./plots/CONF3_CNcolored.png')
+    plt.clf()
 
 
 s = 12
@@ -55,11 +81,13 @@ trans_1 = np.array([[0, .98, .02, 0, 0, 0], [0, .98, .02, 0, 0, 0], [0, .98, .02
 trans_2 = trans_1
 start_1 = np.array([0, 0, 1, 0, 0, 0])
 start_2 = np.array([0, 0, 1, 0, 0, 0])
-weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
+weight_initial = np.array([[0, 0, 1, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
+
+locs = util.get_chrom_locations(seq_len)
 
 Z = util.generate_Z([1/2, 1/2], num_of_cells, rng)
 
-rates = rng.normal(loc=10, scale=1, size=150)
+rates = rng.normal(loc=10, scale=1, size=num_of_cells)
 
 index_of_cells_cluster_1 = [index for index, value in enumerate(Z) if value == 1]
 index_of_cells_cluster_2 = [index for index, value in enumerate(Z) if value == 2]
@@ -83,11 +111,12 @@ print("data splits:")
 print(len(new_Y1))
 print(len(new_Y2))
 
-C2[10:30] = 3
+C2[10:30] = 0
 means = rates_of_cluster_2 * .75
 data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),10:30] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=20) for mean in means])
 
-plot(seq_len, data_sign, "CONF 3")
+plot(seq_len, data_sign, "CONF 3", locs)
+plot_cn(seq_len, data_sign, C1, C2)
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
 labels = np.concatenate((label_0, label_1))
@@ -129,6 +158,7 @@ def get_clustering_random(num_of_clusters, data):
         classes[n] = np.where(pi[n] == max(pi[n]))[0][0]
     return pi, classes
 
+
 delta = np.array([10,10])
 theta = np.ones(num_of_cells)
 tau = np.ones(num_of_cells)
@@ -156,7 +186,7 @@ pi, classes = get_clustering_random(2, data)
 prior = (delta, theta_prior, tau_prior, alpha_prior, beta_prior, lam)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
 trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-new_weight_vertex = inference.vi(prior, init, data)
+new_weight_vertex = inference.vi(locs, prior, init, data)
 
 c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 3")
 print(c[0])

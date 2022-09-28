@@ -1,6 +1,6 @@
 import numpy as np
-import CopyMix.CopyMix_Gaussian.util as util
-from CopyMix.CopyMix_Gaussian import inference
+import util
+import inference
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 import math
@@ -32,7 +32,8 @@ def calculate_predicted_c(pi, weight_vertex, name):
     return predicted_c
 
 
-def plot(seq_len, gc, name):
+def plot(seq_len, gc, name, locs):
+    fig, ax = plt.subplots()
     i = 0
     for value in gc:
         if i < 40:
@@ -43,10 +44,11 @@ def plot(seq_len, gc, name):
             color = 'green'
         else:
             color = 'brown'
-        plt.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
-        plt.xlabel('sequence position')
-        plt.ylabel('gc corrected ratio')
-        plt.title(name)
+        ax.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
+        ax.set_xticks(locs[:-1])
+        ax.set_xlabel('sequence position')
+        ax.set_ylabel('gc corrected ratio')
+        ax.set_title(name)
         i += 1
     plt.savefig('./plots/' + name+'.png')
 
@@ -66,6 +68,8 @@ start_4 = np.array([0, 0, 0, 1, 0, 0])
 weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 1, 0, 0]])
 
 Z = util.generate_Z([.25, .25, .25, .25], num_of_cells, rng)
+
+locs = util.get_chrom_locations(seq_len)
 
 rates = rng.normal(loc=10, scale=1, size=num_of_cells)
 
@@ -132,7 +136,7 @@ C4[150:170] = 0
 means = rates_of_cluster_4
 data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):,150:170] = np.array([rng.normal(loc=1, scale=math.sqrt(var), size=20) for mean in means])
 
-plot(seq_len, data_sign, "CONF 11")
+plot(seq_len, data_sign, "CONF 11", locs)
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
 label_2 = [2 for j in range(len(Y3[0]))]
@@ -168,6 +172,7 @@ def get_clustering_random(num_of_clusters, data):
         classes[n] = np.where(pi[n] == max(pi[n]))[0][0]
     return pi, classes
 
+
 delta = np.array([10,10,10,10])
 delta_prior = np.array([1,1,1,1])
 theta = np.ones(num_of_cells)
@@ -197,7 +202,7 @@ pi, classes = get_clustering_random(4, data)
 prior = (delta_prior, theta_prior, tau_prior, alpha_prior, beta_prior, lam_prior)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
 trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-new_weight_vertex = inference.vi(prior, init, data)
+new_weight_vertex = inference.vi(locs, prior, init, data)
 
 c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 11")
 print(c[0])

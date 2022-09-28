@@ -1,6 +1,6 @@
 import numpy as np
-import CopyMix.CopyMix_Gaussian.util as util
-from CopyMix.CopyMix_Gaussian import inference
+import util
+import inference
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 import math
@@ -32,7 +32,8 @@ def calculate_predicted_c(pi, weight_vertex, name):
     return predicted_c
 
 
-def plot(seq_len, gc, name):
+def plot(seq_len, gc, name, locs):
+    fig, ax = plt.subplots()
     i = 0
     for value in gc:
         if i < 60:
@@ -41,10 +42,11 @@ def plot(seq_len, gc, name):
             color = 'b'
         else:
             color = 'green'
-        plt.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
-        plt.xlabel('sequence position')
-        plt.ylabel('gc corrected ratio')
-        plt.title(name)
+        ax.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
+        ax.set_xticks(locs[:-1])
+        ax.set_xlabel('sequence position')
+        ax.set_ylabel('gc corrected ratio')
+        ax.set_title(name)
         i += 1
     plt.savefig('./plots/' + name+'.png')
 
@@ -61,10 +63,11 @@ start_2 = np.array([0, 0, 1, 0, 0, 0])
 start_3 = np.array([0, 0, 0, 1, 0, 0])
 weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0]])
 
+locs = util.get_chrom_locations(seq_len)
 
 Z = util.generate_Z([.35, .35, .3], num_of_cells, rng)
 
-rates = rng.normal(loc=10, scale=1, size=num_of_cells)
+rates = rng.normal(loc=10, scale=.5, size=num_of_cells)
 
 index_of_cells_cluster_1 = [index for index, value in enumerate(Z) if value == 1]
 index_of_cells_cluster_2 = [index for index, value in enumerate(Z) if value == 2]
@@ -78,7 +81,7 @@ num_of_states = len(weight_initial[0])
 
 var = 2
 
-random_state = np.random.RandomState(seed=0)
+random_state = np.random.RandomState(seed=1)
 C1, Y1, prob_C1 = util.generate_hmm_normal(rates_of_cluster_1, var, num_of_states, trans_1, start_1, seq_len, random_state)
 C2, Y2, prob_C2 = util.generate_hmm_normal(rates_of_cluster_2, var, num_of_states, trans_2, start_2, seq_len, random_state)
 C3, Y3, prob_C3 = util.generate_hmm_normal(rates_of_cluster_3, var, num_of_states, trans_3, start_3, seq_len, random_state)
@@ -100,7 +103,7 @@ C1[0:26] = 0
 means = rates_of_cluster_1 * .2
 data_sign[:len(new_Y1),0:26] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=26) for mean in means])
 
-plot(seq_len, data_sign, "CONF 9")
+plot(seq_len, data_sign, "CONF 9", locs)
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
 label_2 = [2 for j in range(len(Y3[0]))]
@@ -149,6 +152,7 @@ def get_clustering_random(num_of_clusters, data):
         classes[n] = np.where(pi[n] == max(pi[n]))[0][0]
     return pi, classes
 
+
 delta = np.array([10,10,10])
 delta_prior = np.array([1,1,1])
 theta = np.ones(num_of_cells)
@@ -178,7 +182,7 @@ pi, classes = get_clustering_random(3, data)
 prior = (delta_prior, theta_prior, tau_prior, alpha_prior, beta_prior, lam_prior)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
 trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-new_weight_vertex = inference.vi(prior, init, data)
+new_weight_vertex = inference.vi(locs, prior, init, data)
 
 c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 9")
 print(c[0])

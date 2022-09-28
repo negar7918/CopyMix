@@ -1,6 +1,6 @@
 import numpy as np
-import CopyMix.CopyMix_Gaussian.util as util
-from CopyMix.CopyMix_Gaussian import inference
+import util
+import inference
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 import math
@@ -32,7 +32,8 @@ def calculate_predicted_c(pi, weight_vertex, name):
     return predicted_c
 
 
-def plot(seq_len, gc, name):
+def plot(seq_len, gc, name, locs):
+    fig, ax = plt.subplots()
     i = 0
     for value in gc:
         if i < 36:
@@ -45,10 +46,11 @@ def plot(seq_len, gc, name):
             color = 'brown'
         else:
             color = 'pink'
-        plt.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
-        plt.xlabel('sequence position')
-        plt.ylabel('gc corrected ratio')
-        plt.title(name)
+        ax.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
+        ax.set_xticks(locs[:-1])
+        ax.set_xlabel('sequence position')
+        ax.set_ylabel('gc corrected ratio')
+        ax.set_title(name)
         i += 1
     plt.savefig('./plots/' + name+'.png')
 
@@ -61,15 +63,17 @@ trans_1 = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], 
 trans_3 = trans_1
 trans_2 = trans_1
 trans_4 = trans_1
-trans_5 = trans_1
 start_1 = np.array([0, 1, 0, 0, 0, 0])
 start_2 = np.array([0, 0, 1, 0, 0, 0])
 start_3 = np.array([0, 0, 0, 1, 0, 0])
-start_4 = np.array([0, 0, 0, 1, 0, 0])
+start_4 = np.array([0, 0, 0, 0, 0, 1])
 start_5 = np.array([0, 0, 0, 0, 1, 0])
-weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 1, 0]])
+weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 1, 0]])
 
 trans_1 = np.array([[0, .2, .8, 0, 0, 0], [0, .1, .8, .1, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0], [0, .1, .9, 0, 0, 0]])
+trans_5 = trans_1
+
+locs = util.get_chrom_locations(seq_len)
 
 Z = util.generate_Z([.2, .2, .2, .2, .2], num_of_cells, rng)
 
@@ -111,9 +115,29 @@ print(len(new_Y2))
 print(len(new_Y3))
 print(len(new_Y4))
 
+C1[30:40] = 5
+means = rates_of_cluster_1
+data_sign[:len(new_Y1),30:40] = np.array([rng.normal(loc=70, scale=math.sqrt(var), size=10) for mean in means])
+C1[70:80] = 5
+means = rates_of_cluster_1
+data_sign[:len(new_Y1),70:80] = np.array([rng.normal(loc=70, scale=math.sqrt(var), size=10) for mean in means])
+C1[120:130] = 5
+means = rates_of_cluster_1
+data_sign[:len(new_Y1),120:130] = np.array([rng.normal(loc=70, scale=math.sqrt(var), size=10) for mean in means])
 
-C2[10:100] = 2
-data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),10:100] = rng.normal(loc=40, scale=math.sqrt(var), size=90)[np.newaxis, :]
+
+C2[70:90] = 2
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),70:90] = rng.normal(loc=40, scale=math.sqrt(var), size=20)[np.newaxis, :]
+C2[90:110] = 3
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),90:110] = rng.normal(loc=50, scale=math.sqrt(10), size=20)[np.newaxis, :]
+C2[110:130] = 2
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),110:130] = rng.normal(loc=40, scale=math.sqrt(var), size=20)[np.newaxis, :]
+C2[150:170] = 4
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),150:170] = rng.normal(loc=60, scale=math.sqrt(5), size=20)[np.newaxis, :]
+C2[170:190] = 5
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),170:190] = rng.normal(loc=70, scale=math.sqrt(10), size=20)[np.newaxis, :]
+C2[190:200] = 4
+data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),190:200] = rng.normal(loc=60, scale=math.sqrt(10), size=10)[np.newaxis, :]
 
 
 C3[10:26] = 0
@@ -122,19 +146,25 @@ data_sign[len(new_Y1)+len(new_Y2):len(new_Y1)+len(new_Y2)+len(new_Y3),10:26] = r
 C3[140:170] = 2
 data_sign[len(new_Y1)+len(new_Y2):len(new_Y1)+len(new_Y2)+len(new_Y3),140:170] = rng.normal(loc=40, scale=math.sqrt(var), size=30)[np.newaxis, :]
 
-C4[10:60] = 3
+C4[10:20] = 3
 means = rates_of_cluster_4
-data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),10:60] = np.array([rng.normal(loc=60, scale=math.sqrt(var), size=50) for mean in means])
+data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),10:20] = np.array([rng.normal(loc=50, scale=math.sqrt(var), size=10) for mean in means])
 
-C4[26:40] = 4
+C4[20:40] = 2
 means = rates_of_cluster_4
-data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),26:40] = np.array([rng.normal(loc=80, scale=math.sqrt(var), size=14) for mean in means])
+data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),20:40] = np.array([rng.normal(loc=30, scale=math.sqrt(var), size=20) for mean in means])
 
 C4[150:170] = 0
 means = rates_of_cluster_4
 data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4),150:170] = np.array([rng.normal(loc=1, scale=math.sqrt(var), size=20) for mean in means])
 
-plot(seq_len, data_sign, "CONF 15")
+
+data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4), 0] = 1
+for m in map(int, locs[13:-1]):
+    data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4), m+1] = data_sign[len(new_Y1)+len(new_Y2)+len(new_Y3):len(new_Y1)+len(new_Y2)+len(new_Y3)+len(new_Y4), 0]
+
+
+plot(seq_len, data_sign, "CONF 16", locs)
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
 label_2 = [2 for j in range(len(Y3[0]))]
@@ -172,6 +202,7 @@ def get_clustering_random(num_of_clusters, data):
         classes[n] = np.where(pi[n] == max(pi[n]))[0][0]
     return pi, classes
 
+
 delta = np.array([10,10,10,10,20])
 delta_prior = np.array([1,1,1,1,1])
 theta = np.ones(num_of_cells)
@@ -183,8 +214,8 @@ beta_prior = 0
 for n in range(num_of_cells):
     theta[n] = np.mean(data[n])  # mean of data # 10
     tau[n] = np.var(data[n])  # var of data # 1
-alpha_gam = 1
-beta_gam = np.var(data)
+alpha_gam = 1 #.01 1
+beta_gam = np.var(data) #.01   2
 weight_vertex = np.zeros((5, num_of_states, seq_len))
 weight_initial = np.ones((5, num_of_states)) / 5
 weight_edge = np.zeros((5, num_of_states, num_of_states))
@@ -201,9 +232,9 @@ pi, classes = get_clustering_random(5, data)
 prior = (delta_prior, theta_prior, tau_prior, alpha_prior, beta_prior, lam_prior)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
 trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-new_weight_vertex = inference.vi(prior, init, data)
+new_weight_vertex = inference.vi(locs, prior, init, data)
 
-c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 15")
+c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 16")
 print(c[0])
 print('#####')
 print(c[1])

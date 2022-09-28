@@ -1,6 +1,6 @@
 import numpy as np
-from CopyMix.CopyMix_Gaussian import util
-from CopyMix.CopyMix_Gaussian import inference
+import util
+import inference
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 from matplotlib import pyplot as plt
@@ -28,29 +28,33 @@ def calculate_predicted_c(pi, weight_vertex, name):
         ax.set_xlabel('sequence position')
         ax.set_ylabel('copy number')
         ax.set_title(name + "_estimated_copy_number")
-    plt.savefig('./plots/' +name + '_estimated_copy_number.png')
+    plt.savefig('./plots/'+name + "_estimated_copy_number.png")
     return predicted_c
 
 
-def plot(seq_len, gc, name):
+def plot(seq_len, gc, name, locs):
+    fig, ax = plt.subplots()
     i = 0
     for value in gc:
         if i < 74:
             color = 'r'
         else:
             color = 'b'
-        plt.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
-        plt.xlabel('sequence position')
-        plt.ylabel('gc corrected ratio')
-        plt.title(name)
+        ax.scatter(np.arange(seq_len), value, edgecolors=color, s=.3)
+        ax.set_xticks(locs[:-1])
+        ax.set_xlabel('sequence position')
+        ax.set_ylabel('gc corrected ratio')
+        ax.set_title(name)
         i += 1
-    plt.savefig('./plots/' +name+'.png')
+    plt.savefig('./plots/CONF 2.png')
 
 
 s = 12
 rng = np.random.default_rng(s)
 num_of_cells = 150
 seq_len = 200
+locs = util.get_chrom_locations(seq_len)
+
 trans_1 = np.array([[0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
 trans_2 = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
 start_1 = np.array([0, 0, 1, 0, 0, 0])
@@ -87,7 +91,7 @@ C2[10:30] = 2
 means = rates_of_cluster_2 * 2
 data_sign[len(new_Y1):len(new_Y1)+len(new_Y2),10:30] = np.array([rng.normal(loc=mean, scale=math.sqrt(var), size=20) for mean in means])
 
-plot(seq_len, data_sign, "CONF 2")
+plot(seq_len, data_sign, "CONF 2", locs)
 label_0 = [0 for i in range(len(Y1[0]))]
 label_1 = [1 for j in range(len(Y2[0]))]
 labels = np.concatenate((label_0, label_1))
@@ -105,7 +109,6 @@ print(new_Y2)
 c_1 = [C1 for i in range(len(Y1[0]))]
 c_2 = [C2 for i in range(len(Y2[0]))]
 true_c = np.concatenate((c_1, c_2))
-
 data = data_sign
 
 # End of simulation
@@ -156,7 +159,7 @@ pi, classes = get_clustering_random(2, data)
 prior = (delta, theta_prior, tau_prior, alpha_prior, beta_prior, lam)
 init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
 trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-new_weight_vertex = inference.vi(prior, init, data)
+new_weight_vertex = inference.vi(locs, prior, init, data)
 
 c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 2")
 print(c[0])

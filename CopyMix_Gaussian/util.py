@@ -4,6 +4,23 @@ from scipy import stats
 import math
 
 
+def get_the_chrom_lenthgs(num_of_bins):
+    # this is calculated based on real data example: locally not in github (code is at phylogeny.parse_chrom.py)
+    fraction_of_genome = [0.09, 0.08, 0.07, 0.07,  0.06, 0.06, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+                          0.04,  0.04, 0.03, 0.03, 0.03, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01]
+    return np.multiply(fraction_of_genome, num_of_bins)
+
+
+def get_chrom_locations(seq_len):
+    chrom_lengths = get_the_chrom_lenthgs(seq_len)
+    locs = [0]
+    prev = 0
+    for i in chrom_lengths:
+        locs.append(prev + i)
+        prev = prev + i
+    return locs
+
+
 def calculate_total_variation(c, true_c):
     proportion_c = np.zeros_like(c)
     proportion_true_c = np.zeros_like(c)

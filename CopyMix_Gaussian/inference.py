@@ -12,7 +12,7 @@ class Dirichlet:
         self.deltas = deltas
 
     def get_distribution(self):
-        return dirichlet(self.deltas) #TODO what to return?
+        return dirichlet(self.deltas)
 
     def get_expectation(self, index):
         return self.deltas[index] / np.sum(self.deltas)
@@ -106,7 +106,6 @@ class C:
         h = StubHMM(self.J)
         h.transmat_ = weight_edge + .0000000000001
         h.startprob_ = weight_initial + .0000000000001
-        #h.framelogprob = self.observation_prob
         self.hmm = h
         # Calculating forward and backward probabilities
         logprob, fwdlattice = self.hmm._do_forward_pass(self.observation_prob)
@@ -212,13 +211,11 @@ def update_pi(delta, expected_hidden, theta, tau, alpha, beta, cells):
     J = len(expected_hidden[0, :, 0])
     M = len(expected_hidden[0, 0, :])
     N = len(cells)
-    # sums = np.zeros((N,K))
-    # val = 0
     log_normalized = np.zeros((N,K))
     pi = Pi(delta)
 
     import multiprocessing as mp
-    pool = mp.Pool(mp.cpu_count())
+    pool = mp.Pool(1)
     sums = pool.map(update_pi_inner, [(K, J, M, theta[n], tau[n], expected_hidden, alpha, beta, cells[n]) for n in range(N)])
     pool.close()
 
@@ -228,6 +225,15 @@ def update_pi(delta, expected_hidden, theta, tau, alpha, beta, cells):
         log_normalized[n, :] = updated_pi[n] - logsumexp(updated_pi[n])
 
     return np.exp(log_normalized)
+
+
+# input: J, J x M, start position of each chromosome
+def correct_for_chrom(weight_vertex, locs):
+    for i in locs[:-1]:
+        prev_i = int(i)
+        weight_vertex[:, prev_i + 1] = weight_vertex[:, 0]
+
+    return weight_vertex
 
 
 def replace_inf(array):
@@ -366,7 +372,7 @@ class Params(object):
         # expectation of log[p(Y|Z,C,Ψ)]
         def get_term1():
             import multiprocessing as mp
-            pool = mp.Pool(mp.cpu_count())
+            pool = mp.Pool(1) #mp.Pool(mp.cpu_count())
             res = pool.map(self.get_term1_inner, [(self.pi[n], self.theta[n], self.tau[n], cells[n], expected_hidden)
                                                   for n in range(self.N)])
             pool.close()
@@ -520,44 +526,6 @@ class Params(object):
         return self.calculate_expectation_full_joint_probability(cells, prior, clusters) - \
                self.calculate_expectation_entropy(clusters)
 
-    def get_dic(self, clusters, cells):
-        # calculate expected_hidden
-        expected_hidden = np.zeros((self.K, self.J, self.M))
-        sum_of_expected_hidden_two = np.zeros((self.K, self.J, self.J))
-        for k in range(self.K):
-            sum_of_expected_hidden_two[k] = clusters[k].sum_of_expectation_two()
-            expected_hidden[k] = clusters[k].get_expectation()
-
-        def handle_inf(x):
-            import sys
-            if np.isinf(x):
-                return sys.maxsize
-            else:
-                return x
-
-        # term_1 : -4 E[ log[p(Y | Z, C, Ψ)] ] w.r.t. final posterior values
-        # term_2 : 2 log[p(Y|Z,C,Ψ)] where Z, C and Ψ are the modes (maximizing the posteriors)
-        res = 0
-        for n in range(self.N):
-            for k in range(self.K):
-                for j in range(self.J):
-                    res += np.sum(self.pi[n, k] * expected_hidden[k, j, :] *
-                                  calculate_expectation_of_D(j, self.epsilon_r[n], self.epsilon_s[n], cells[n]))
-        term_1 = - res
-
-        res = 0
-        for n in range(self.N):
-            for m in range(self.M):
-                k = int(np.argmax(self.pi[n, :]))
-                j = int(np.argmax(expected_hidden[k, :, m]))
-                theta = self.epsilon_s[n] / self.epsilon_r[n]
-                state = j
-                D = handle_inf(math.log(poisson.pmf(cells[n, m], theta * state) + .0000001))
-                res += D
-        term_2 = 2 * res
-
-        return term_1, 4 * term_1 + term_2
-
 
 def calculate_most_probable_states(cells, trans, emiss, weight_initial, pi):
     M = len(trans[0, 0, :])
@@ -581,10 +549,9 @@ def calculate_most_probable_states(cells, trans, emiss, weight_initial, pi):
 
 
 # Requires numpy arrays (do np.array() before passing arguments)
-def vi(prior, init, y, max_iter=15, tol=.000000001): # .01
+def vi(locs, prior, init, y, max_iter=15, tol=.000000001):
     N = len(y[:, 0])
     import multiprocessing as mp
-
 
     delta_prior, theta_prio, tau_prior, alpha_gam_prior, beta_gam_prior, lam_prior = prior
     delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex = init
@@ -621,6 +588,8 @@ def vi(prior, init, y, max_iter=15, tol=.000000001): # .01
         new_delta = update_delta(prior.delta, p_prev.pi)
 
         for k in range(K):
+            # handle chromosomal loci
+            p_prev.weight_vertex[k] = correct_for_chrom(p_prev.weight_vertex[k], locs)
             graph = C(M, p_prev.weight_initial[k], p_prev.weight_edge[k], p_prev.weight_vertex[k])
             # Update 3
             clusters.insert(k, graph)
@@ -668,9 +637,6 @@ def vi(prior, init, y, max_iter=15, tol=.000000001): # .01
         m += 1
 
     l = p_list[-1]
-    #vi.likelihood, vi.dic = l.get_dic(clusters, y)
-    # l = p_list[-2]
-    # vi.likelihood, vi.dic = l.get_dic(clusters_prev, y)
     vi.likelihood = elbo_values_prev
     return l.print()
 
