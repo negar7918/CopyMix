@@ -1,12 +1,12 @@
 import numpy as np
-import CopyMix.CopyMix_Gaussian.util as util
-from CopyMix.CopyMix_Gaussian.inference import vi
+import util
+from inference import vi
 from sklearn.metrics.cluster import v_measure_score
 from scipy.stats import dirichlet
 import math
 
 
-def calculate_predicted_c(pi, weight_vertex, name):
+def calculate_predicted_c(pi, weight_vertex):
     K = pi.shape[1]
     M = len(weight_vertex[0, 0, :])
     predicted_c = np.zeros((K, M))
@@ -24,6 +24,8 @@ def run(s):
     start_1 = np.array([0, 0, 1, 0, 0, 0])
     start_2 = np.array([0, 0, 1, 0, 0, 0])
     weight_initial = np.array([[0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0]])
+
+    locs = util.get_chrom_locations(seq_len)
 
     Z = util.generate_Z([1/2, 1/2], num_of_cells, rng)
 
@@ -128,7 +130,7 @@ def run(s):
         prior = (delta, theta_prior, tau_prior, alpha_prior, beta_prior, lam)
         init = (delta, theta, tau, alpha_gam, beta_gam, lam, pi, weight_initial, weight_edge, weight_vertex)
         trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-        new_weight_vertex = vi(prior, init, data)
+        new_weight_vertex = vi(locs, prior, init, data)
         ll = np.append(ll, vi.likelihood)
         new_pis = np.append(new_pis, new_pi)
         new_weight_vertexes = np.append(new_weight_vertexes, new_weight_vertex)
@@ -145,7 +147,7 @@ def run(s):
     new_weight_vertex = new_weight_vertexes_reshaped[init_with_highest_ll]
     pi = pis_reshaped[init_with_highest_ll]
 
-    c = calculate_predicted_c(new_pi, new_weight_vertex, "CONF 1")
+    c = calculate_predicted_c(new_pi, new_weight_vertex)
 
     print("TV distance:"+str(util.calculate_total_variation(c, true_c)))
 
