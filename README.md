@@ -6,7 +6,7 @@ See CopyMix_Gaussian folder for the code and test results. Everything outside th
 
 # Guidelines
 
-- There are 18 simulated data test files (corresponding to the 18 configurations in the paper), and each uses an initialization which results in the largest ELBO. 
+- There are 16 simulated data test files (corresponding to the 16 configurations in the paper), and each uses an initialization which results in the largest ELBO. 
 - The test results can be reproduced by running each of the file in the CopyMix_Gaussian, where the name starts with "test_".
 - By running boxplot.py the test results for the 30 datasets are reproduced in form of a box plot.
 - Note that the initialization.py was used to run 50 initializations and provide the one with the largest ELBO.
