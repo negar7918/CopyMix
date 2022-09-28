@@ -589,7 +589,8 @@ def vi(locs, prior, init, y, max_iter=15, tol=.000000001):
 
         for k in range(K):
             # handle chromosomal loci
-            p_prev.weight_vertex[k] = correct_for_chrom(p_prev.weight_vertex[k], locs)
+            if locs is not None:
+                p_prev.weight_vertex[k] = correct_for_chrom(p_prev.weight_vertex[k], locs)
             graph = C(M, p_prev.weight_initial[k], p_prev.weight_edge[k], p_prev.weight_vertex[k])
             # Update 3
             clusters.insert(k, graph)

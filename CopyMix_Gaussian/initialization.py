@@ -190,7 +190,7 @@ def generate_initializations(id, data, num_of_states, total_num_of_clusters):
             inits[index].add_init(delta, theta, tau, alpha_gam, beta_gam, lam, pi,
                                   weight_initial, weight_edge, weight_vertex)
             new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-            new_weight_vertex, trans = vi(prior, init, data)
+            new_weight_vertex, trans = vi(None, prior, init, data)
             inits[index].add_new(trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
             new_weight_vertex, vi.likelihood, "random_random"+str(i), k)
 
@@ -203,7 +203,7 @@ def generate_initializations(id, data, num_of_states, total_num_of_clusters):
             inits[index].add_init(delta, theta, tau, alpha_gam, beta_gam, lam, pi,
                                  weight_initial, weight_edge, weight_vertex)
             new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi, weight_initial, new_weight_edge, \
-            new_weight_vertex, trans = vi(prior, init, data)
+            new_weight_vertex, trans = vi(None, prior, init, data)
             inits[index].add_new(trans, new_delta, new_theta, new_tau, new_alpha_gam, new_beta_gam, new_lam, new_pi,
                                  weight_initial, new_weight_edge, new_weight_vertex, vi.likelihood, "random" + str(i), k)
 
