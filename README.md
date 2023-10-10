@@ -2,7 +2,7 @@
 This is the implementation of the CopyMix paper:
 "CopyMix: Mixture Model Based Single-Cell Clustering and Copy Number Profiling using Variational Inference"
 
-See CopyMix_Gaussian folder for the code and test results. Everything outside this folder is old material when the emission modelling was Poisson.
+See CopyMix_Gaussian folder for the code and test results.
 
 # Guidelines
 
